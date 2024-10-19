@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,12 @@ const products = [
   { id: '4', image:  require('../../assets/images/products/p4.png'), price: '$35.00', status: 'SOLD' },
   { id: '5', image:  require('../../assets/images/products/p4.png'), price: '$35.00', status: 'SOLD' },
 
+];
+
+const banners = [
+  { id: '1', image: require('../../assets/images/bannerr.png') },
+  { id: '2', image: require('@/assets/images/bannerr.png') },
+  { id: '3', image: require('@/assets/images/bannerr.png') },
 ];
 
 const listedItems = [
@@ -63,6 +69,18 @@ const Sell = () => {
     { useNativeDriver: false } // `false` because we are animating layout properties
   );
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const bannerRef = useRef<FlatList>(null);
+
+  const handleScroll = (event: any) => {
+    const newIndex = Math.round(event.nativeEvent.contentOffset.x / SCREEN_WIDTH);
+    setCurrentIndex(newIndex);
+  };
+
+  const renderBanner = ({ item }: { item: { id: string; image: ImageSourcePropType } }) => (
+    <Image source={item.image} style={styles.bannerImage} />
+  );
+
   return (
     <SafeAreaView style={styles.container}>
     <Animated.ScrollView
@@ -70,13 +88,37 @@ const Sell = () => {
       showsVerticalScrollIndicator={false}
       onScroll={onScroll}
     >
-      <View style={styles.banner}>
-        <Image source={require('@/assets/images/bannerr.png')} style={styles.bannerImage} />
+      <FlatList
+        data={banners}
+        ref={bannerRef}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(item) => item.id}
+        renderItem={renderBanner}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={styles.carouselContainer}
+      />
+
+      <View style={styles.pagination}>
+        {banners.map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.dot,
+              currentIndex === index ? styles.activeDot : styles.inactiveDot,
+            ]}
+          />
+        ))}
       </View>
+
 
       {/* Products Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Sold in the last 10 minutes</Text>
+        <Text style={styles.sectionTitle}>
+          Endorse your Listed Products
+        </Text>
         <FlatList
           data={products}
           renderItem={renderProduct}
@@ -191,6 +233,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  carouselContainer: { paddingVertical: 10 },
+
   scrollContainer: {
     flex: 1,
   },
@@ -199,6 +243,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  bannerImage: {
+    width: SCREEN_WIDTH,
+    height: 200,
+    resizeMode: 'contain',
+  },
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 4,
+  },
+  activeDot: { backgroundColor: '#000' },
+  inactiveDot: { backgroundColor: '#ccc' },
   card: {
     width: SCREEN_WIDTH * 0.8,
     marginRight: 10,
@@ -302,11 +364,7 @@ fontFamily: 'Montserrat_Bold',
     width: SCREEN_WIDTH,
     height: 200,
   },
-  bannerImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-  },
+  
   section: {
     paddingHorizontal: 15,
   },
