@@ -22,6 +22,8 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const products = [
   { id: '1', image:  require('../../assets/canva_template/shoo.png'), price: '$68.00', status: 'SOLD' },
   { id: '2', image:  require('../../assets/canva_template/mac.png'), price: '$68.00', status: 'SOLD' },
+  { id: '1', image:  require('../../assets/canva_template/shoo.png'), price: '$68.00', status: 'SOLD' },
+
 
 
 
