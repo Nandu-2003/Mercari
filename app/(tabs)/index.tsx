@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,9 @@ import {
   Dimensions,
   TextInput,
   ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Keyboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Chip } from 'react-native-paper';
@@ -27,12 +30,12 @@ const categories = [
     name: 'Fashion',
     icon: require('../../assets/images/fashion.png'),
     subcategories: [
-      { name: 'Women', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Men', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Accessories', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Footwear', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Kids', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Watches', icon: require('../../assets/images/products/design3.png') },
+      { name: 'Women', icon: require('../../assets/images/products/women.png') },
+      { name: 'Men', icon: require('../../assets/images/products/men.png') },
+      { name: 'Kids', icon: require('../../assets/images/products/kids.png') },
+      { name: 'Footwear', icon: require('../../assets/images/products/footwear.png') },
+      { name: 'Accessories', icon: require('../../assets/images/products/Accessories.png') },
+      { name: 'Watches', icon: require('../../assets/images/products/watch.png') },
     ],
   },
   {
@@ -41,29 +44,23 @@ const categories = [
     subcategories: [
       { name: 'Skincare', icon: require('../../assets/images/products/design3.png') },
       { name: 'Haircare', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Fragrances', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Makeup', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Bath', icon: require('../../assets/images/products/design3.png') },
-      { name: '', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Men', icon: require('../../assets/images/products/design3.png') },
+      { name: 'Fragrances', icon: require('../../assets/images/products/fragrance.png') },
+      { name: 'Makeup', icon: require('../../assets/images/products/beauty.png') },
+      { name: 'Bath', icon: require('../../assets/images/products/bath.png') },
     ],
   },
   {
     name: 'Home',
-    icon: require('../../assets/images/products/salon.png'),
+    icon: require('../../assets/images/home.png'),
     subcategories: [
-      { name: 'Men', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Women', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Men', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Women', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Men', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Women', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Men', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Women', icon: require('../../assets/images/products/design3.png') },
+      { name: 'Furnishing', icon: require('../../assets/images/products/furniture.png') },
+      { name: 'Organisers', icon: require('../../assets/images/products/design3.png') },
+      { name: 'DinnerWare', icon: require('../../assets/images/products/dinnerware.png') },
+      { name: 'Appliances', icon: require('../../assets/images/products/appliances.png') },
+      { name: 'Decor', icon: require('../../assets/images/products/design3.png') },
     ],
   },
 ];
-
 // Sample Products Data
 const products = [
   {
@@ -104,128 +101,185 @@ const products = [
 const ShopScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState('Fashion');
 
-  // Load Montserrat fonts
-  const [fontsLoaded] = useFonts({
-    Montserrat_Regular: require('../../assets/fonts/Montserrat-Regular.ttf'),
-    Montserrat_SemiBold: require('../../assets/fonts/Montserrat-SemiBold.ttf'),
-    Montserrat_Bold: require('../../assets/fonts/Montserrat-Bold.ttf'),
-  });
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
-  if (!fontsLoaded) {
-    return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#E91E63" />
-      </View>
+  // Handle keyboard visibility changes
+  useEffect(() => {
+    const keyboardDidShow = Keyboard.addListener('keyboardDidShow', () =>
+      setIsKeyboardVisible(true)
     );
-  }
+    const keyboardDidHide = Keyboard.addListener('keyboardDidHide', () =>
+      setIsKeyboardVisible(false)
+    );
+
+    return () => {
+      keyboardDidShow.remove();
+      keyboardDidHide.remove();
+    };
+  }, []);
 
   // Subcategories data based on selected category
   const subcategories =
     categories.find((cat) => cat.name === selectedCategory)?.subcategories || [];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={products}
-        keyExtractor={(item, index) => index.toString()}
-        numColumns={2}
-        columnWrapperStyle={styles.productRow}
-        contentContainerStyle={styles.productList}
-        ListHeaderComponent={
-          <>
-            {/* Header */}
-            <View style={styles.header}>
-              <Text style={styles.logoText}>mercari</Text>
-              <View style={styles.headerIcons}>
-                <TouchableOpacity style={styles.iconButton}>
-                  <FontAwesome name="heart-o" size={24} color="#333" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.iconButton}>
-                  <AntDesign name="shoppingcart" size={24} color="#333" />
-                  <View style={styles.notificationBadge}>
-                    <Text style={styles.badgeText}>1</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
+    <SafeAreaView style={{
+      flex: 1,
+      backgroundColor: '#f9f9f9',
+    }}>
+    <ScrollView style={styles.container}>
+    <View style={styles.header}>
+      <Text style={styles.logoText}>mercari</Text>
+      <View style={styles.headerIcons}>
+        <TouchableOpacity style={styles.iconButton}>
+          <FontAwesome name="heart-o" size={24} color="#333" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconButton}>
+          <AntDesign name="shoppingcart" size={24} color="#333" />
+          <View style={styles.notificationBadge}>
+            <Text style={styles.badgeText}>1</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    </View>
 
-            {/* Search Bar */}
-            <View style={styles.searchContainer}>
-              <AntDesign name="search1" size={20} color="#888" style={styles.searchIcon} />
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search for anything"
-                placeholderTextColor="#aaa"
-              />
-              <TouchableOpacity>
-                <MaterialIcons name="camera-alt" size={22} color="#333" />
-              </TouchableOpacity>
-            </View>
-
-            {/* Category Chips */}
-            <FlatList
-              data={categories}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={(item) => item.name}
-              contentContainerStyle={styles.chipContainer}
-              renderItem={({ item, index }) => (
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Chip
-                    icon={() => <Image source={item.icon} style={styles.chipIcon} />}
-                    style={[
-                      styles.chip,
-                      selectedCategory === item.name && styles.selectedChip,
-                    ]}
-                    textStyle={[
-                      styles.chipText,
-                      selectedCategory === item.name && styles.selectedChipText,
-                    ]}
-                    onPress={() => setSelectedCategory(item.name)}
-                  >
-                    {item.name}
-                  </Chip>
-
-                  {index === categories.length - 1 && (
-                    <TouchableOpacity style={styles.iconButton1} onPress={
-                      () => router.push("/(modal)")
-                    }>
-                      <AntDesign name="appstore-o" size={24} color="#333" />
-                    </TouchableOpacity>
-                  )}
-                </View>
-              )}
-            />
-
-            {/* Subcategories */}
-            <FlatList
-              data={subcategories}
-              keyExtractor={(item) => item.name}
-              numColumns={3}
-              contentContainerStyle={styles.subCategoryContainer}
-              renderItem={({ item }) => (
-                <View style={styles.subCategoryItem}>
-                  <View style={styles.subCategoryIconWrapper}>
-                    <Image source={item.icon} style={styles.subCategoryImage} />
-                  </View>
-                  <Text style={styles.subCategoryText}>{item.name}</Text>
-                </View>
-              )}
-            />
-
-            <Text style={styles.sectionTitle}>Explore Products</Text>
-          </>
-        }
-        renderItem={({ item }) => <ProductCard product={item} />}
+    <View style={styles.searchContainer}>
+      <AntDesign name="search1" size={20} color="#888" style={styles.searchIcon} />
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search for anything"
+        placeholderTextColor="#aaa"
       />
-      <TouchableOpacity style={styles.exploreButton}
-      onPress={() => router.push("/chatBot")}
-      >
-  <Text style={styles.exploreButtonText}>XPLORE</Text>
-</TouchableOpacity>
+      <TouchableOpacity>
+        <MaterialIcons name="camera-alt" size={22} color="#333" />
+      </TouchableOpacity>
+    </View>
 
-    </SafeAreaView>
-  );
+    <FlatList
+      data={categories}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      keyExtractor={(item) => item.name}
+      contentContainerStyle={styles.chipContainer}
+      renderItem={({ item, index }) => (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <Chip
+            icon={() => <Image source={item.icon} style={styles.chipIcon} />}
+            style={[
+              styles.chip,
+              selectedCategory === item.name && styles.selectedChip,
+            ]}
+            textStyle={[
+              styles.chipText,
+              selectedCategory === item.name && styles.selectedChipText,
+            ]}
+            onPress={() => setSelectedCategory(item.name)}
+          >
+            {item.name}
+          </Chip>
+
+          {index === categories.length - 1 && (
+            <TouchableOpacity
+              style={styles.iconButton1}
+              onPress={() => router.push('/(modal)')}
+            >
+              <AntDesign name="appstore-o" size={24} color="#333" />
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
+    />
+
+    <FlatList
+      data={subcategories}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      keyExtractor={(item) => item.name}
+      contentContainerStyle={styles.horizontalSubCategoryContainer}
+      renderItem={({ item }) => (
+        <View style={styles.horizontalSubCategoryItem}>
+          <Image source={item.icon} style={styles.subCategoryImage} />
+          <Text style={styles.subCategoryText}>{item.name}</Text>
+        </View>
+      )}
+    />
+
+<View style={{
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginTop: 10,
+}}>
+<Text style={styles.sectionTitle}>Products For You</Text>
+<Pressable>
+  <Text style={{
+    fontFamily: 'Montserrat_Regular',
+    color: '#292C3F',
+    fontSize: 12,
+    padding: 5,
+  }}>View All</Text>
+  </Pressable>
+</View>
+    <FlatList
+  data={products}
+  keyExtractor={(item, index) => index.toString()}
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={styles.productList}
+  renderItem={({ item }) => (
+    <View style={styles.productWrapper}>
+      <ProductCard product={item} />
+    </View>
+  )}
+/>
+
+
+<View style={{
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginTop: 10,
+}}>
+<Text style={styles.sectionTitle}>Recommendations</Text>
+
+</View>
+    <FlatList
+  data={products}
+  keyExtractor={(item, index) => index.toString()}
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={styles.productList}
+  renderItem={({ item }) => (
+    <View style={styles.productWrapper}>
+      <ProductCard product={item} />
+    </View>
+  )}
+/>
+<FlatList
+  data={products}
+  keyExtractor={(item, index) => index.toString()}
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={styles.productList}
+  renderItem={({ item }) => (
+    <View style={styles.productWrapper}>
+      <ProductCard product={item} />
+    </View>
+  )}
+/>
+
+   
+  </ScrollView>
+  {!isKeyboardVisible && (
+        <TouchableOpacity
+          style={styles.exploreButton}
+          onPress={() => router.push('/chatBot')}
+        >
+          <Text style={styles.exploreButtonText}>XPLORE</Text>
+        </TouchableOpacity>
+      )}
+  </SafeAreaView>
+);
 };
 
 const styles = StyleSheet.create({
@@ -236,7 +290,7 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: '#f9f9f9',
-    flex: 1,
+    paddingHorizontal: 10,
   },
   header: {
     flexDirection: 'row',
@@ -254,6 +308,10 @@ const styles = StyleSheet.create({
   headerIcons: {
     flexDirection: 'row',
   },
+  productWrapper: {
+  width: width / 2 - 16, // Half of the screen width minus padding
+  marginHorizontal: 8, // Adjust spacing between products
+},
   iconButton: {
     marginLeft: 15,
   },
@@ -300,7 +358,7 @@ const styles = StyleSheet.create({
   },
   chipContainer: {
     paddingHorizontal: 2,
-    marginBottom: 15,
+    gap: 10,
   },
   chip: {
     marginRight: 4,
@@ -328,26 +386,25 @@ const styles = StyleSheet.create({
   },
   productRow: {
     justifyContent: 'space-between',
-    marginBottom: 10,
   },
   productList: {
-    paddingHorizontal: 10,
-    paddingBottom: 50,
   },
   subCategoryContainer: {
     paddingBottom: 20,
   },
-  subCategoryItem: {
+  horizontalSubCategoryContainer: {
+    paddingHorizontal: 10,  // Add some padding to the container if needed
+  },
+  horizontalSubCategoryItem: {
     alignItems: 'center',
-    width: width / 3 - 20,
-    marginVertical: 10,
-    marginTop:0,
+    marginRight: 15,  // Adjust the space between items
   },
   subCategoryImage: {
     width: 70,
     height: 70,
     resizeMode: 'contain',
   },
+ 
   subCategoryText: {
     fontSize: 12,
     textAlign: 'center',
@@ -357,12 +414,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontFamily: 'Montserrat_SemiBold',
-    marginBottom: 10,
     paddingHorizontal: 10,
   },
   exploreButton: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 80,
     right: 20,
     backgroundColor: '#292C3F',
     borderRadius: 25,
