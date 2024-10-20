@@ -11,18 +11,21 @@ import {
   ActivityIndicator,
   Animated,
   ImageSourcePropType,
+  Share,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ShareButton from '../Button/ShareButton';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 // Dummy data for products and listed items
 const products = [
-  { id: '1', image:  require('../../assets/images/products/p4.png'), price: '$68.00', status: 'SOLD' },
-  { id: '2', image:  require('../../assets/images/products/p4.png'), price: '$38.00', status: 'SOLD' },
-  { id: '3', image:  require('../../assets/images/products/p4.png'), price: '$35.00', status: 'SOLD' },
-  { id: '4', image:  require('../../assets/images/products/p4.png'), price: '$35.00', status: 'SOLD' },
-  { id: '5', image:  require('../../assets/images/products/p4.png'), price: '$35.00', status: 'SOLD' },
+  { id: '1', image:  require('../../assets/canva_template/shoo.png'), price: '$68.00', status: 'SOLD' },
+  { id: '2', image:  require('../../assets/canva_template/mac.png'), price: '$68.00', status: 'SOLD' },
+  { id: '1', image:  require('../../assets/canva_template/shoo.png'), price: '$68.00', status: 'SOLD' },
+
+
+
 
 ];
 
@@ -45,6 +48,7 @@ const Sell = () => {
       <Text style={styles.soldLabel}>{item.status}</Text>
       <Image source={item.image} style={styles.productImage} />
       <Text style={styles.productPrice}>{item.price}</Text>
+      <ShareButton item={item.id} />
     </View>
   );
 
