@@ -85,11 +85,11 @@ export default function TabLayout() {
             }}
           />
           <Tabs.Screen
-            name="inbox"
+            name="huddle"
             options={{
-              title: 'Inbox',
+              title: 'Huddle',
               tabBarIcon: ({ color }) => (
-<AntDesign name="pay-circle-o1" size={24} color="#666" />
+            <AntDesign name="pay-circle-o1" size={24} color="#666" />
               ),
             }}
           />
