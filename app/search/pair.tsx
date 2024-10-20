@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Image, View, StyleSheet, Text } from "react-native";
 
-const ML_API_URL = "https://d6da-14-98-16-198.ngrok-free.app"; 
+const ML_API_URL = "https://9316-14-194-79-94.ngrok-free.app"; 
 
 const PairedSearch = () => {
   const { filename } = useGlobalSearchParams();
