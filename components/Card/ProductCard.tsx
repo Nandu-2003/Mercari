@@ -50,7 +50,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderColor: '#eee',
     borderWidth: 1,
-    marginVertical: 10,
+    marginVertical: 5,
+    width: '85%', 
+    alignSelf: 'center', 
   },
   imageContainer: {
     width: '100%',
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     backgroundColor: 'rgba(128, 128, 128, 0.6)',
-    borderRadius: 4,
+    borderRadius: 2,
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
@@ -86,12 +88,12 @@ const styles = StyleSheet.create({
   },
   nameContainer: {
     backgroundColor: '#fff',
-    paddingVertical: 8,
+    paddingVertical: 5,
     alignItems: 'center',
   },
   productName: {
     fontFamily: 'Montserrat_SemiBold',
-    fontSize: 14,
+    fontSize: 12,
     color: '#333',
   },
 });
