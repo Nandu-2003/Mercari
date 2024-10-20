@@ -42,11 +42,11 @@ const categories = [
     name: 'Beauty',
     icon: require('../../assets/images/beautychip.jpg'),
     subcategories: [
-      { name: 'Skincare', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Haircare', icon: require('../../assets/images/products/design3.png') },
-      { name: 'Fragrances', icon: require('../../assets/images/products/fragrance.png') },
       { name: 'Makeup', icon: require('../../assets/images/products/beauty.png') },
+      { name: 'Haircare', icon: require('../../assets/images/products/haircare.png') },
+      { name: 'Fragrances', icon: require('../../assets/images/products/fragrance.png') },
       { name: 'Bath', icon: require('../../assets/images/products/bath.png') },
+      { name: 'Skincare', icon: require('../../assets/images/products/design3.png') },
     ],
   },
   {
@@ -54,7 +54,7 @@ const categories = [
     icon: require('../../assets/images/home.png'),
     subcategories: [
       { name: 'Furnishing', icon: require('../../assets/images/products/furniture.png') },
-      { name: 'Organisers', icon: require('../../assets/images/products/design3.png') },
+      { name: 'Organisers', icon: require('../../assets/images/products/organizers.png') },
       { name: 'DinnerWare', icon: require('../../assets/images/products/dinnerware.png') },
       { name: 'Appliances', icon: require('../../assets/images/products/appliances.png') },
       { name: 'Decor', icon: require('../../assets/images/products/design3.png') },
@@ -66,34 +66,69 @@ const products = [
   {
     imageUrl: require('../../assets/images/products/p1.png'),
     name: 'Tube Beige Dress',
-    bust: 32,
-    discountedPrice: 799,
-    originalPrice: 5000,
-    storeName: 'bohemastore PRO',
+    discountedPrice: 1299,
   },
   {
-    imageUrl: require('../../assets/images/products/p2.png'),
-    name: 'Red Summer Dress',
-    bust: 34,
+    imageUrl: require('../../assets/images/products/d2.jpg'),
+    name: 'Grey Check Dress',
     discountedPrice: 699,
-    originalPrice: 4500,
-    storeName: 'fashionhouse PRO',
   },
   {
     imageUrl: require('../../assets/images/products/p3.png'),
-    name: 'Tube Beige Dress',
-    bust: 32,
-    discountedPrice: 799,
-    originalPrice: 5000,
-    storeName: 'bohemastore PRO',
+    name: 'Rolex Analog',
+    discountedPrice: 2599,
   },
   {
     imageUrl: require('../../assets/images/products/p4.png'),
-    name: 'Red Summer Dress',
-    bust: 34,
+    name: 'Nike Sneakers',
+    discountedPrice: 599,
+  },
+  // Add more products as needed
+];
+
+const recomendationItems1 = [
+  {
+    imageUrl: require('../../assets/images/products/table1.png'),
+    name: 'Layered Wooden',
+    discountedPrice: 1299,
+  },
+  {
+    imageUrl: require('../../assets/images/products/table2.png'),
+    name: 'Study Table',
     discountedPrice: 699,
-    originalPrice: 4500,
-    storeName: 'fashionhouse PRO',
+  },
+  {
+    imageUrl: require('../../assets/images/products/table3.png'),
+    name: 'Coffee Table',
+    discountedPrice: 2599,
+  },
+  {
+    imageUrl: require('../../assets/images/products/table4.png'),
+    name: 'Centre Table',
+    discountedPrice: 599,
+  },
+  // Add more products as needed
+];
+const recomendationItems2 = [
+  {
+    imageUrl: require('../../assets/images/products/table3.png'),
+    name: 'Coffee Table',
+    discountedPrice: 1299,
+  },
+  {
+    imageUrl: require('../../assets/images/products/table4.png'),
+    name: 'Centre Table',
+    discountedPrice: 699,
+  },
+  {
+    imageUrl: require('../../assets/images/products/table3.png'),
+    name: 'Coffee Table',
+    discountedPrice: 2599,
+  },
+  {
+    imageUrl: require('../../assets/images/products/table4.png'),
+    name: 'Centre Table',
+    discountedPrice: 599,
   },
   // Add more products as needed
 ];
@@ -183,7 +218,7 @@ const ShopScreen = () => {
               style={styles.iconButton1}
               onPress={() => router.push('/(modal)')}
             >
-              <AntDesign name="appstore-o" size={24} color="#333" />
+              <AntDesign name="appstore-o" size={20} color="#333" />
             </TouchableOpacity>
           )}
         </View>
@@ -244,7 +279,7 @@ const ShopScreen = () => {
 
 </View>
     <FlatList
-  data={products}
+  data={recomendationItems1}
   keyExtractor={(item, index) => index.toString()}
   horizontal
   showsHorizontalScrollIndicator={false}
@@ -256,7 +291,7 @@ const ShopScreen = () => {
   )}
 />
 <FlatList
-  data={products}
+  data={recomendationItems2}
   keyExtractor={(item, index) => index.toString()}
   horizontal
   showsHorizontalScrollIndicator={false}
@@ -267,17 +302,41 @@ const ShopScreen = () => {
     </View>
   )}
 />
+<View style={{
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginTop: 10,
+}}>
+<Text style={styles.sectionTitle}>Recommendations</Text>
 
+</View>
+    <FlatList
+  data={recomendationItems1}
+  keyExtractor={(item, index) => index.toString()}
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={styles.productList}
+  renderItem={({ item }) => (
+    <View style={styles.productWrapper}>
+      <ProductCard product={item} />
+    </View>
+  )}
+/>
+<FlatList
+  data={recomendationItems2}
+  keyExtractor={(item, index) => index.toString()}
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={styles.productList}
+  renderItem={({ item }) => (
+    <View style={styles.productWrapper}>
+      <ProductCard product={item} />
+    </View>
+  )}
+/>
    
   </ScrollView>
-  {!isKeyboardVisible && (
-        <TouchableOpacity
-          style={styles.exploreButton}
-          onPress={() => router.push('/chatBot')}
-        >
-          <Text style={styles.exploreButtonText}>XPLORE</Text>
-        </TouchableOpacity>
-      )}
   </SafeAreaView>
 );
 };
@@ -313,14 +372,15 @@ const styles = StyleSheet.create({
   marginHorizontal: 8, // Adjust spacing between products
 },
   iconButton: {
-    marginLeft: 15,
+    marginLeft: 10,
   },
   iconButton1: {
     backgroundColor: '#fff',
-    borderRadius: 25,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: '#292C3F',
     padding: 8,
+    marginLeft: -10,
   },
   notificationBadge: {
     position: 'absolute',
@@ -358,7 +418,7 @@ const styles = StyleSheet.create({
   },
   chipContainer: {
     paddingHorizontal: 2,
-    gap: 10,
+    gap: 3,
   },
   chip: {
     marginRight: 4,
@@ -397,7 +457,7 @@ const styles = StyleSheet.create({
   },
   horizontalSubCategoryItem: {
     alignItems: 'center',
-    marginRight: 15,  // Adjust the space between items
+    marginRight: 10,  // Adjust the space between items
   },
   subCategoryImage: {
     width: 70,
